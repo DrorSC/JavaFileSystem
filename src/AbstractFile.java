@@ -1,3 +1,4 @@
 public interface AbstractFile {
-    public String getInfo(int depht);
+    String getInfo(int depth);
+    String getName();
 }

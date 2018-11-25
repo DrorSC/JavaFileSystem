@@ -1,9 +1,9 @@
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 public class Directory implements AbstractFile {
-
     private Directory parentDir;
     private String name;
     private Date creationDate;
@@ -36,11 +36,52 @@ public class Directory implements AbstractFile {
         return sb.toString();
     }
 
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
     public void addFileToDir(File newFile){
         includedFiles.add(newFile);
+        System.out.println("File " + newFile.getName() + " has been added to directory " + this.name);
     }
 
     public void addDirToDir(Directory newDir) {
         includedFiles.add(newDir);
+        System.out.println("Directory " + newDir.getName() + " has been added to directory " + this.name);
+    }
+
+    public void deleteFile(File fileToDel) {
+        this.includedFiles.remove(fileToDel);
+        //this.toDelete.add(fileToDel);
+        System.out.println("File " + fileToDel.getName() + " has been deleted from directory " + this.name);
+    }
+
+    private void deleteDirectory(Directory dirToDel, Map<String, AbstractFile> filesMap) {
+        this.includedFiles.remove(dirToDel);
+        //this.toDelete.add(dirToDel);
+        System.out.println("Directory " + dirToDel.getName() + " has been deleted from directory " + this.name);
+    }
+
+    public void delete(Map<String, AbstractFile> filesMap) {
+        // Delete the dir folders and files
+        if(!includedFiles.isEmpty()){
+            Object obj = includedFiles.get(0);
+            while(obj != null){
+                String className = obj.getClass().getSimpleName();
+                if(className.equals("Directory")){
+                    ((Directory)obj).delete(filesMap);
+                }else {
+                    ((File)obj).delete(filesMap);
+                }
+                if(includedFiles.isEmpty())
+                    break;
+                obj = includedFiles.get(0);
+            }
+        }
+        if(!(this.name == "root")) {
+            this.parentDir.deleteDirectory(this, filesMap);
+            filesMap.remove(this.name);
+        }
     }
 }

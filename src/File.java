@@ -1,5 +1,6 @@
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 public class File implements AbstractFile {
     private Directory parentDir;
@@ -21,11 +22,17 @@ public class File implements AbstractFile {
         for(int i=0; i< depth; i++)
             sb.append("\t");
         sb.append(name);
-        sb.append(" (" + formatDate.format(creationDate) + ", " + size + "bytes)\n");
+        sb.append(" (" + formatDate.format(creationDate) + " | " + size + "bytes)\n");
         return sb.toString();
     }
 
+    @Override
     public String getName(){
         return this.name;
+    }
+
+    public void delete(Map<String, AbstractFile> filesMap) {
+        this.parentDir.deleteFile(this);
+        filesMap.remove(this.name);
     }
 }
