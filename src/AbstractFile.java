@@ -1,3 +1,3 @@
 public interface AbstractFile {
-    public void ls();
+    public String getInfo(int depht);
 }
