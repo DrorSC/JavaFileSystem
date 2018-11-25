@@ -20,6 +20,7 @@ public class Directory implements AbstractFile {
     public String getInfo(int depth){
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat formatDate = new SimpleDateFormat();
+        // Keep tracking on depth tree for the tabs - for better UI of the files in system and their relation
         for(int i=0; i< depth; i++)
             sb.append("\t");
         sb.append(name);
@@ -53,13 +54,11 @@ public class Directory implements AbstractFile {
 
     public void deleteFile(File fileToDel) {
         this.includedFiles.remove(fileToDel);
-        //this.toDelete.add(fileToDel);
         System.out.println("File " + fileToDel.getName() + " has been deleted from directory " + this.name);
     }
 
-    private void deleteDirectory(Directory dirToDel, Map<String, AbstractFile> filesMap) {
+    private void deleteDirectory(Directory dirToDel) {
         this.includedFiles.remove(dirToDel);
-        //this.toDelete.add(dirToDel);
         System.out.println("Directory " + dirToDel.getName() + " has been deleted from directory " + this.name);
     }
 
@@ -79,8 +78,9 @@ public class Directory implements AbstractFile {
                 obj = includedFiles.get(0);
             }
         }
+        // in case it isn't the root folder, remove directory from parent array & mapper
         if(!(this.name == "root")) {
-            this.parentDir.deleteDirectory(this, filesMap);
+            this.parentDir.deleteDirectory(this);
             filesMap.remove(this.name);
         }
     }
